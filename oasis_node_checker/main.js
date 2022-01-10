@@ -110,8 +110,10 @@ const botJob = new CronJob(`*/10 * * * * *`, async function () {
 	
 	// validator connect check
 	if(cfg.SERVER_TYPE == 'validator'){
+		logger.debug(`mjb2 : is active1`)
 		// sign check
 		if(checkValidatorSign === false && blockHeight > missedBlockHeight) {
+			logger.debug(`mjb2 : is active2`)
 			missedBlockHeight = blockHeight
 			alert.sendMSG(`ALERT! Height ${blockHeight.toLocaleString()} is missed.\n${cfg.EXTERN_EXPLORER}/blocks/${blockHeight}`)
 		}
