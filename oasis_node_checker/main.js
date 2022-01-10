@@ -89,8 +89,14 @@ const botJob = new CronJob(`*/10 * * * * *`, async function () {
 		
 	// validator connect check
 	if(cfg.SERVER_TYPE == 'validator'){
+		logger.info(`mjb6909`)
+		logger.info(`blockHeight : ${blockHeight}`)
+		logger.info(`missedBlockHeight : ${missedBlockHeight}`)
+		logger.info(`checkValidatorSign : ${checkValidatorSign}`)
+		
 		// sign check
 		if(checkValidatorSign === false && blockHeight > missedBlockHeight) {
+			logger.info(`ALERT! Height ${blockHeight.toLocaleString()} is missed.\n${cfg.EXTERN_EXPLORER}/blocks/${blockHeight}`)
 			missedBlockHeight = blockHeight
 			alert.sendMSG(`ALERT! Height ${blockHeight.toLocaleString()} is missed.\n${cfg.EXTERN_EXPLORER}/blocks/${blockHeight}`)
 		}
