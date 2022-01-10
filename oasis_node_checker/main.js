@@ -33,7 +33,7 @@ const botJob = new CronJob(`*/10 * * * * *`, async function () {
 	let checkValidatorConnect = false
 	let checkValidatorSign = await server.checkValidatorSign()
 	
-	logger.info(`mjb ${checkValidatorSign}`)
+	logger.info(`mjb ${checkValidatorSign} , blockHeight : ${blockHeight}`)
 	
 	telegramBot.setVariables({
 		mem : mem,
