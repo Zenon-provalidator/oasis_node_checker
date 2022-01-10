@@ -1,0 +1,19 @@
+{
+  "name": "oasis_node_checker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "zenon_provalidator",
+  "license": "ISC",
+  "dependencies": {
+    "child_process": "^1.0.2",
+    "cron": "^1.8.2",
+    "dotenv": "^8.2.0",
+    "log4js": "^6.3.0",
+    "sync-request": "^6.1.0",
+    "telegraf": "^3.38.0"
+  }
+}
