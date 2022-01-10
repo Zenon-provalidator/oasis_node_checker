@@ -19,6 +19,9 @@ let botStatusFlag = false
 let executeCnt = 0
 let blockCheck = [] // block check height array
 
+//curl -s 'http://localhost:8080/api/consensus/block?name=Provalidator' | jq '.result.height' | tr -d '"'
+//curl -s 'http://localhost:8080/api/consensus/blocklastcommit?name=Provalidator' | grep B9582118624D1FD1F07E060F4B76939AE42F79C8 | wc -l
+
 const botJob = new CronJob(`*/10 * * * * *`, async function () {
 	let mem = await server.getMemoryUsage()
 	let cpu = await server.getCpuUsage()
@@ -29,6 +32,8 @@ const botJob = new CronJob(`*/10 * * * * *`, async function () {
 	let checkLcdPort = false
 	let checkValidatorConnect = false
 	let checkValidatorSign = await server.checkValidatorSign()
+	
+	logger.info(`mjb ${checkValidatorSign}`)
 	
 	telegramBot.setVariables({
 		mem : mem,
