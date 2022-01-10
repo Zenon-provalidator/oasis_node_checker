@@ -2,7 +2,6 @@ const cfg = require('dotenv').config({ path: './config' }).parsed //load config 
 const logger = require('./process/logger').log4js
 const alert = require('./process/alert')
 const server = require('./process/server')
-const rpc = require('./process/rpc')
 const telegramBot = require('./process/telegram_bot')
 const CronJob = require('cron').CronJob
 
@@ -33,15 +32,12 @@ const botJob = new CronJob(`*/10 * * * * *`, async function () {
 	let checkValidatorConnect = false
 	let checkValidatorSign = await server.checkValidatorSign()
 	
-	logger.info(`mjb ${checkValidatorSign} , blockHeight : ${blockHeight}`)
-	
 	telegramBot.setVariables({
 		mem : mem,
 		cpu : cpu,
 		disk : disk,
 		peer : peer,
 		blockHeight : blockHeight
-		//rpcHeight : rpcHeight		
 	})
 	// memory check
 	if(mem > parseFloat(cfg.SERVER_ALERT_MEMORY)) {
@@ -90,30 +86,11 @@ const botJob = new CronJob(`*/10 * * * * *`, async function () {
 //	logger.info(`executeCnt:${executeCnt}`)
 //	logger.info(`blockCheck.length:${blockCheck.length}`)
 
-	if(blockCheck.length > 1){ //need history
-		if(heightDiff > cfg.SERVER_ALERT_BLOCK_ERROR_RANGE){ // server block height is abnormal
-			let rpcHeight = await rpc.getRpcHeight()
-			//block height smaller than extern block height
-			if(blockCheck[executeCnt] < rpcHeight -1 ){
-				alert.sendMSG(`ALERT! Server height is abnormal.\n${cfg.RPC_URL}/status\nExtern=${rpcHeight.toLocaleString()}\nDiff=${heightDiff.toLocaleString()}\nCurrentblockheight=${blockCheck[executeCnt].toLocaleString()}\nPreblockheight=${blockCheck[executeCnt-1].toLocaleString()}`)
-			}
-		} else {
-			let rpcHeight = await rpc.getRpcHeight()
-			if(blockCheck[executeCnt] === blockCheck[executeCnt-1] === blockCheck[executeCnt-2] === blockCheck[executeCnt-3] === blockCheck[executeCnt-4]){ //chain is stop
-				alert.sendMSG(`ALERT! Maybe chain is down.\n${cfg.RPC_URL}/status\nExtern=${rpcHeight.toLocaleString()}\nDiff=${heightDiff.toLocaleString()}\nCurrentblockheight=${blockCheck[executeCnt].toLocaleString()}\nPreblockheight=${blockCheck[executeCnt-1].toLocaleString()}`)
-			}else{
-				// normal
-//				logger.info(`Diff=${heightDiff.toLocaleString()}\nCurrentblockheight=${blockCheck[executeCnt].toLocaleString()}\nPreblockheight=${blockCheck[executeCnt-1].toLocaleString()}`)
-			}
-		}
-	}
-	
+		
 	// validator connect check
 	if(cfg.SERVER_TYPE == 'validator'){
-		logger.debug(`mjb2 : is active1`)
 		// sign check
 		if(checkValidatorSign === false && blockHeight > missedBlockHeight) {
-			logger.debug(`mjb2 : is active2`)
 			missedBlockHeight = blockHeight
 			alert.sendMSG(`ALERT! Height ${blockHeight.toLocaleString()} is missed.\n${cfg.EXTERN_EXPLORER}/blocks/${blockHeight}`)
 		}
@@ -163,7 +140,6 @@ const botJob = new CronJob(`*/10 * * * * *`, async function () {
 	//	console.log(`disk : ${disk}`)
 	//	console.log(`peer : ${peer}`)
 	//	console.log(`blockHeight : ${blockHeight}`)
-	//	console.log(`rpcHeight : ${rpcHeight}`)
 	//	console.log(`checkDialPort : ${checkDialPort}`)
 	//	console.log(`checkLcdPort : ${checkLcdPort}`)
 	//	console.log(`checkValidatorConnect : ${checkValidatorConnect}`)
